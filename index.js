@@ -8,7 +8,7 @@ const { default: mongoose } = require("mongoose")
 App.get("/favicon.ico", (req, res) => res.status(204));
 App.use(cors())
 App.use(express.json())
-App.use('/api/Auth', customerRouters)
+App.use('/api/customer', customerRouters)
 
 Main().catch((e) => console.log(e))
 async function Main() {
