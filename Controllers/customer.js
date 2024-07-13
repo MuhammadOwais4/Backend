@@ -1,5 +1,5 @@
 const { SendResponse } = require('../Helpers/HelperFx')
-let User = require('../Model/User')
+let User = require('../Model/customer')
 let jwt = require('jsonwebtoken')
 // let bcrypt = require('bcrypt')
 let UserController = {

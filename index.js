@@ -2,13 +2,13 @@ require('dotenv').config()
 const express = require("express")
 const App = express()
 const cors = require("cors")
-const UserRouters = require("./Routes/User")
+const customerRouters = require("./Routes/customer")
 const { default: mongoose } = require("mongoose")
 
 App.get("/favicon.ico", (req, res) => res.status(204));
 App.use(cors())
 App.use(express.json())
-App.use('/api/Auth', UserRouters)
+App.use('/api/Auth', customerRouters)
 
 Main().catch((e) => console.log(e))
 async function Main() {
