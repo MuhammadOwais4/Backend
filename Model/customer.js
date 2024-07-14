@@ -9,5 +9,5 @@ const UserSchema = new mongoose.Schema({
     gender: { type: String, enum: ["male", 'female'] },
 })
 
-let User = new mongoose.model("User", UserSchema)
+let User = new mongoose.model("customer", UserSchema)
 module.exports = User
