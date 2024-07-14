@@ -1,6 +1,7 @@
 const { SendResponse } = require('../Helpers/HelperFx')
 let userModel = require('../Model/seller')
 let restorantModel = require('../Model/restorant')
+let productModel = require('../Model/products')
 let jwt = require('jsonwebtoken')
 // let bcrypt = require('bcrypt')
 let UserController = {
@@ -121,8 +122,63 @@ let UserController = {
     },
     deleteRestorant: async (req, res) => {
         try {
-            let { id } = req.params 
+            let { id } = req.params
             let Response = await restorantModel.findOneAndUpdate({ _id: req.params.id, ownerId: req.user._id }, { isDeleted: true })
+            if (!Response) return res.send(SendResponse(false, "restorant Not Found", Response))
+            res.status(200).send(SendResponse(true, "restorant Successfully Deleted", Response))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    CreateProduct: async (req, res) => {
+        try {
+            let { restorantId, name, description, price, discount, image, category } = req.body
+            let ErrArr = []
+            console.log(name)
+            if (!name) ErrArr.push("Name is Required ")
+            if (!price) ErrArr.push("price is Required")
+            if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
+            let productExits = await restorantModel.findOne({ restorantId, name })
+            if (productExits) return res.status(400).send(SendResponse(false, "product Already Exits in your restorant", { name }))
+            let Response = await productModel({ restorantId, name, description, price, discount, image, category }).save()
+            res.status(200).send(SendResponse(true, "Product Successfully Created", Response))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    getAllMyProduct: async (req, res) => {
+        try {
+            let { id } = req.params
+            let { restaurantId } = req.query
+            let productExits = await productModel.find({ restorantId: restaurantId })
+            res.status(200).send(SendResponse(true, "Success", productExits))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    getProductById: async (req, res) => {
+        try {
+            let { id } = req.params
+            let productExits = await productModel.findOne({ _id: id })
+            res.status(200).send(SendResponse(true, "Success", productExits))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    updateProduct: async (req, res) => {
+        try {
+            let { name, description, price, discount, image, category } = req.body
+            let Response = await productModel.findOneAndUpdate({ _id: req.params.id }, { name, description, price, discount, image, category }, { new: true })
+            if (!Response) return res.status(404).send(SendResponse(false, "restorant Not Found", { Response }))
+            res.status(200).send(SendResponse(true, "restorant Successfully updated", Response))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    deleteProduct: async (req, res) => {
+        try {
+            let { id } = req.params
+            let Response = await productModel.findOneAndDelete({ _id: id })
             if (!Response) return res.send(SendResponse(false, "restorant Not Found", Response))
             res.status(200).send(SendResponse(true, "restorant Successfully Deleted", Response))
         } catch (err) {

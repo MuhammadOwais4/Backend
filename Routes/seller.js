@@ -7,6 +7,11 @@ router.post('/Signup', Controllers.Signup)
     .get('/restorant/:id', Controllers.ProtectByAuth, Controllers.getRestorantById)
     .patch('/restorant/:id', Controllers.ProtectByAuth, Controllers.updateRestorant)
     .delete('/restorant/:id', Controllers.ProtectByAuth, Controllers.deleteRestorant)
+    .post('/product', Controllers.ProtectByAuth, Controllers.CreateProduct)
+    .get('/product', Controllers.ProtectByAuth, Controllers.getAllMyProduct)
+    .get('/product/:id', Controllers.ProtectByAuth, Controllers.getProductById)
+    .patch('/product/:id', Controllers.ProtectByAuth, Controllers.updateProduct)
+    .delete('/product/:id', Controllers.ProtectByAuth, Controllers.deleteProduct)
 
 
 module.exports = router
