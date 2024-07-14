@@ -66,6 +66,25 @@ let UserController = {
             res.status(407).send(SendResponse(false, "invalid Token Err", err));
         }
     },
+    CreateRestorant: async (req, res) => {
+        try {
+            let { name, address, location, contactInfo, sliderImages, coverImage } = req.body
+            let ErrArr = []
+            email = email.toLowerCase()
+            gender = gender.toLowerCase()
+            if (!name) ErrArr.push("Name is Required ")
+            if (!address) ErrArr.push("address is Required")
+            if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
+            let restorantExits = await User.findOne({ name })
+            if (restorantExits) return res.send(SendResponse(false, "restorant Already Exits", { name }))
+            let Response = await User({
+                name, address, location, contactInfo, sliderImages, coverImage
+            }).save()
+            res.status(200).send(SendResponse(true, "restorant Successfully Created", Response))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
 }
 module.exports = UserController
 
