@@ -90,7 +90,6 @@ let UserController = {
     getAllMyRestorant: async (req, res) => {
         try {
             let { _id } = req.user
-            let ErrArr = []
             let restorantExits = await restorantModel.find({ ownerId: _id })
             res.status(200).send(SendResponse(true, "Success", restorantExits))
         } catch (err) {
@@ -102,8 +101,6 @@ let UserController = {
             let { _id } = req.user
             let { id } = req.params
             let ErrArr = []
-            if (!id) ErrArr.push(" you Mush be Put Restorant Id ")
-            if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
             let restorantExits = await restorantModel.findOne({ ownerId: _id, _id: id })
             res.status(200).send(SendResponse(true, "Success", restorantExits))
         } catch (err) {
