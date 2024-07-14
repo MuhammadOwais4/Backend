@@ -1,5 +1,5 @@
 const { SendResponse } = require('../Helpers/HelperFx')
-let User = require('../Model/customer')
+let User = require('../Model/seller')
 let jwt = require('jsonwebtoken')
 // let bcrypt = require('bcrypt')
 let UserController = {
@@ -17,7 +17,7 @@ let UserController = {
             // let EnPassword = await bcrypt.compare(Password, UserExits._doc.Password)
             // if (!EnPassword) return res.status(400).send(SendResponse(false, "Incorrect Password", { UserName }))
             delete UserExits.password
-            let token = jwt.sign({ ...UserExits }, process.env.customerToken)
+            let token = jwt.sign({ ...UserExits }, process.env.sellerToken)
             if (!token) return res.status(400).send(SendResponse(false, 'Token Not Found'))
             console.log(UserExits)
             res.send(SendResponse(true, "User Successfully Login", { userName, Token: token }))
@@ -50,7 +50,7 @@ let UserController = {
     ProtectByAuth: async (req, res, Next) => {
         try {
             let token = req.get("Authorization")?.split("Bearer ")[1];
-            let decoded = jwt.verify(token, process.env.customerToken);
+            let decoded = jwt.verify(token, process.env.sellerToken);
             if (decoded._doc.UserName) {
                 Next();
             } else {

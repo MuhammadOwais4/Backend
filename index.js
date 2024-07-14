@@ -3,12 +3,14 @@ const express = require("express")
 const App = express()
 const cors = require("cors")
 const customerRouters = require("./Routes/customer")
+const sellerRouters = require("./Routes/seller")
 const { default: mongoose } = require("mongoose")
 
 App.get("/favicon.ico", (req, res) => res.status(204));
 App.use(cors())
 App.use(express.json())
 App.use('/api/customer', customerRouters)
+App.use('/api/seller', sellerRouters)
 
 Main().catch((e) => console.log(e))
 async function Main() {
