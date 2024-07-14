@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const restorantSchema = new mongoose.Schema({
+    ownerId: { type: mongoose.Type.ObjectId, ref: "seller" },
     name: { type: String, unique: true, required: true },
     address: { type: String },
     location: {
@@ -24,8 +25,10 @@ const restorantSchema = new mongoose.Schema({
         url: String,
         type: String,
         name: String
-    }
-})
+    },
+    isDeleted: { type: Boolean },
+    isActive: { type: Boolean }
+}, { timestamps: true })
 
 let restorantModel = new mongoose.model("restorant", restorantSchema)
 module.exports = restorantModel

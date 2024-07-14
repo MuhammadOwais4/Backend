@@ -56,6 +56,7 @@ let UserController = {
             let token = req.get("Authorization")?.split("Bearer ")[1];
             let decoded = jwt.verify(token, process.env.sellerToken);
             if (decoded._doc.UserName) {
+                req.user = decoded._doc
                 Next();
             } else {
                 res
@@ -70,17 +71,64 @@ let UserController = {
         try {
             let { name, address, location, contactInfo, sliderImages, coverImage } = req.body
             let ErrArr = []
-            email = email.toLowerCase()
-            gender = gender.toLowerCase()
             if (!name) ErrArr.push("Name is Required ")
             if (!address) ErrArr.push("address is Required")
             if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
             let restorantExits = await User.findOne({ name })
             if (restorantExits) return res.send(SendResponse(false, "restorant Already Exits", { name }))
             let Response = await User({
+                ownerId: req.user._id,
                 name, address, location, contactInfo, sliderImages, coverImage
             }).save()
             res.status(200).send(SendResponse(true, "restorant Successfully Created", Response))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    getAllMyRestorant: async (req, res) => {
+        try {
+            let { _id } = req.user
+            let ErrArr = []
+            if (!id) ErrArr.push(" you Mush be Put Restorant Id ")
+            if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
+            let restorantExits = await User.find({ ownerId: _id })
+            res.status(200).send(SendResponse(true, "Success", restorantExits))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    getRestorantById: async (req, res) => {
+        try {
+            let { _id } = req.user
+            let { id } = req.params
+            let ErrArr = []
+            if (!id) ErrArr.push(" you Mush be Put Restorant Id ")
+            if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
+            let restorantExits = await User.findOne({ ownerId: _id, _id: id })
+            res.status(200).send(SendResponse(true, "Success", restorantExits))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    updateRestorant: async (req, res) => {
+        try {
+            let { name, address, location, contactInfo, sliderImages, coverImage } = req.body
+            let Response = await User.findOneAndUpdate({ _id: req.params.id, ownerId: req.user.id }, { name, address, location, contactInfo, sliderImages, coverImage })
+            if (!Response) return res.status(404).send(SendResponse(false, "restorant Not Found", { name }))
+            res.status(200).send(SendResponse(true, "restorant Successfully updated", Response))
+        } catch (err) {
+            res.send(SendResponse(false, "Catch Unknown Error", err))
+        }
+    },
+    deleteRestorant: async (req, res) => {
+        try {
+            let { id } = req.params
+            let ErrArr = []
+            if (!id) ErrArr.push(" you Mush be Put Restorant Id ")
+            if (ErrArr.length > 0) return res.status(400).send(SendResponse(false, "", ErrArr))
+            let Response = await User.findOneAndUpdate({ _id: req.params.id, ownerId: req.user.id }, { isDeleted: true })
+            if (!Response) return res.send(SendResponse(false, "restorant Not Found", { name }))
+            res.status(200).send(SendResponse(true, "restorant Successfully updated", Response))
         } catch (err) {
             res.send(SendResponse(false, "Catch Unknown Error", err))
         }
