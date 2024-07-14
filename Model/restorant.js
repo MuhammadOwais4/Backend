@@ -1,6 +1,21 @@
 const mongoose = require('mongoose')
+
+const pointSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+    },
+    coordinates: {
+        type: [Number],
+        required: true,
+    },
+    String: { type: String }
+});
+
+
 const restorantSchema = new mongoose.Schema({
-    ownerId: { type: mongoose.Type.ObjectId, ref: "seller" },
+    ownerId: { type: mongoose.Types.ObjectId, ref: "seller" },
     name: { type: String, unique: true, required: true },
     address: { type: String },
     location: {
@@ -12,7 +27,7 @@ const restorantSchema = new mongoose.Schema({
         index: "2dsphere"
     },
     contactInfo: {
-        phone: { type: Number },
+        phone: { type: String },
         whatsapp: { type: Number },
         otherSocialAccounts: { type: String }
     },
