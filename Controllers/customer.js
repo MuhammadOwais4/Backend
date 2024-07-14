@@ -1,5 +1,5 @@
 const { SendResponse } = require('../Helpers/HelperFx')
-let User = require('../Model/User')
+let User = require('../Model/customer')
 let jwt = require('jsonwebtoken')
 // let bcrypt = require('bcrypt')
 let UserController = {
@@ -7,6 +7,8 @@ let UserController = {
         try {
             let { userName, password, email, phone, gender } = req.body
             let ErrArr = []
+            email = email.toLowerCase()
+            gender = gender.toLowerCase()
             if (!userName) ErrArr.push("UserName is Required")
             if (!password) ErrArr.push("Password is Required")
             if (!email) ErrArr.push("email is Required")
@@ -17,7 +19,7 @@ let UserController = {
             // let EnPassword = await bcrypt.compare(Password, UserExits._doc.Password)
             // if (!EnPassword) return res.status(400).send(SendResponse(false, "Incorrect Password", { UserName }))
             delete UserExits.password
-            let token = jwt.sign({ ...UserExits }, process.env.SECRET_KEY)
+            let token = jwt.sign({ ...UserExits }, process.env.customerToken)
             if (!token) return res.status(400).send(SendResponse(false, 'Token Not Found'))
             console.log(UserExits)
             res.send(SendResponse(true, "User Successfully Login", { userName, Token: token }))
@@ -29,6 +31,8 @@ let UserController = {
         try {
             let { userName, password, email, phone, gender } = req.body
             let ErrArr = []
+            email = email.toLowerCase()
+            gender = gender.toLowerCase()
             if (!userName) ErrArr.push("UserName is Required ")
             if (!password) ErrArr.push("Password is Required ")
             if (!email) ErrArr.push("email is Required ")
@@ -50,7 +54,7 @@ let UserController = {
     ProtectByAuth: async (req, res, Next) => {
         try {
             let token = req.get("Authorization")?.split("Bearer ")[1];
-            let decoded = jwt.verify(token, process.env.SECRET_KEY);
+            let decoded = jwt.verify(token, process.env.customerToken);
             if (decoded._doc.UserName) {
                 Next();
             } else {
