@@ -7,6 +7,8 @@ let UserController = {
         try {
             let { userName, password, email, phone, gender } = req.body
             let ErrArr = []
+            email = email.toLowerCase()
+            gender = gender.toLowerCase()
             if (!userName) ErrArr.push("UserName is Required")
             if (!password) ErrArr.push("Password is Required")
             if (!email) ErrArr.push("email is Required")
@@ -29,6 +31,8 @@ let UserController = {
         try {
             let { userName, password, email, phone, gender } = req.body
             let ErrArr = []
+            email = email.toLowerCase()
+            gender = gender.toLowerCase()
             if (!userName) ErrArr.push("UserName is Required ")
             if (!password) ErrArr.push("Password is Required ")
             if (!email) ErrArr.push("email is Required ")
